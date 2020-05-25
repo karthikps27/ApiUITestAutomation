@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+group 'ApiUITestAutomation'
+version '1.0-SNAPSHOT'
+
+repositories {
+    maven { url "https://repo.maven.apache.org/maven2" }
+    maven { url "https://plugins.gradle.org/m2/" }
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation 'junit:junit:4.12'
+    implementation 'org.apache.logging.log4j:log4j-core:2.13.2'
+    implementation 'org.apache.logging.log4j:log4j-api:2.13.2'
+    implementation 'org.testng:testng:7.0.0'
+    implementation 'org.json:json:20200518'
+    implementation 'io.rest-assured:rest-assured:4.2.0'
+    implementation 'io.rest-assured:json-schema-validator:4.2.0'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.0.0-alpha-5'
+    implementation 'org.seleniumhq.selenium:selenium-server:4.0.0-alpha-2'
+    implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.0.0-alpha-5'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.28'
+}
+
+task runTests(type: Test) {
+    useTestNG() {
+        outputDirectory = file("$project.buildDir/testngOutput")
+        useDefaultListeners = true
+        suiteXmlFiles << new File("src/test/resources/testng.xml")
+        setSuiteXmlFiles(suiteXmlFiles)
+    }
+    testLogging {
+        exceptionFormat "full"
+        events "started", "passed", "skipped", "failed", "standardOut", "standardError"
+        minGranularity 0
+    }
+    reports {
+        junitXml.enabled = false
+        html.enabled = true
+    }
+}
