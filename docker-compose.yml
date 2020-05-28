@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  test_local:
+    build: .
+    privileged: true
+    user: root
+    volumes:
+      - ./build:/tests/build
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    hostname: jenkins
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080
+      - 50000:50000

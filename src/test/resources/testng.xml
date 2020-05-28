@@ -10,7 +10,7 @@
     <!-- <parameter name="perf" value="NO"/> -->
 
     <parameter name="browser" value="chrome"/>
-    <parameter name="headless" value="false"/>
+    <parameter name="headless" value="true"/>
     <test name="E2E Tests for Web and Api">
         <!-- <parameter name="browser" value="chrome"/> -->
         <classes>

@@ -1,17 +1,21 @@
 package org.karthikps.testautomation.tests;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.karthikps.testautomation.api.ApiUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Feature("Beers API Tests")
 public class ApiTest<T> extends ApiUtils<T> {
     private static final Logger logger = LogManager.getLogger(ApiTest.class);
 
-    @Test(groups = {"Tests"}, description = "Test API")
+    @Test(groups = {"Tests"}, description = "Beer API Tests")
+    @Description("Basic Beer API Tests")
     public void AllBeers() {
         RestAssured.baseURI = "https://api.punkapi.com";
 

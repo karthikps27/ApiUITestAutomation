@@ -1,7 +1,20 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.qameta.allure:allure-gradle:+"
+    }
+}
+
 plugins {
     id 'java'
     id 'idea'
+    id 'com.palantir.docker' version '0.25.0'
+    id 'com.palantir.docker-run' version '0.25.0'
 }
+
+apply plugin: 'io.qameta.allure'
 
 group 'ApiUITestAutomation'
 version '1.0-SNAPSHOT'
@@ -13,10 +26,24 @@ repositories {
     jcenter()
 }
 
+docker {
+    name 'apiuiautomation:latest'
+    pull true
+    dockerfile file('Dockerfile')
+}
+
+allure {
+    autoconfigure = true
+    aspectjweaver = true
+    version = '2.13.3'
+    useTestNG {
+        version = '2.13.3'
+    }
+    downloadLink = 'https://dl.bintray.com/qameta/maven/io/qameta/allure/allure-commandline/2.13.3/allure-commandline-2.13.3.zip'
+}
+
 dependencies {
     implementation 'junit:junit:4.12'
-    implementation 'org.apache.logging.log4j:log4j-core:2.13.2'
-    implementation 'org.apache.logging.log4j:log4j-api:2.13.2'
     implementation 'org.testng:testng:7.0.0'
     implementation 'org.json:json:20200518'
     implementation 'io.rest-assured:rest-assured:4.2.0'
@@ -25,6 +52,10 @@ dependencies {
     implementation 'org.seleniumhq.selenium:selenium-server:4.0.0-alpha-2'
     implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.0.0-alpha-5'
     implementation 'org.slf4j:slf4j-log4j12:1.7.28'
+    implementation 'io.qameta.allure:allure-gradle:2.8.1'
+    implementation 'io.qameta.allure:allure-testng:2.13.3'
+    implementation 'io.qameta.allure:allure-rest-assured:2.13.3'
+    implementation 'io.qameta.allure:allure-attachments:2.13.3'
 }
 
 task runTests(type: Test) {

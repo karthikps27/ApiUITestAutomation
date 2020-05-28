@@ -5,6 +5,8 @@ bin/
 Driver/
 logs/
 gradle/
+.allure/
+allure-results/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
