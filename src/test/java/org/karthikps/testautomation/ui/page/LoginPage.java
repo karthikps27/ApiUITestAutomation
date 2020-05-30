@@ -43,6 +43,7 @@ public class LoginPage extends BasePage {
             enterStringToField(password, "123456");
             click(loginButton);
             Allure.addAttachment("Login", new ByteArrayInputStream(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES)));
+            logger.info("Logged in successfully");
             //captureImage(tcName);
         } catch (Exception e) {
             logger.error(e.getStackTrace());
