@@ -3,18 +3,18 @@ pipeline {
         docker {
             image "apiuiautomation:latest"
         }
+    }
 
-        stages {
-            stage('Clean and Build') {
-                steps {
-                    sh 'gradle clean build'
-                }
+    stages {
+        stage('Clean and Build') {
+            steps {
+                sh 'gradle clean build'
             }
+        }
 
-            stage('Test Run'){
-                steps {
-                    sh 'gradle task runTests'
-                }
+        stage('Test Run'){
+            steps {
+                sh 'gradle task runTests'
             }
         }
     }
