@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image "apiuiautomation:latest"
+            image "apiuitestautomation_test_local:latest"
         }
     }
 
