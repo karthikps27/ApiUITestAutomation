@@ -30,9 +30,15 @@ RUN curl -o allure-commandline-${ALLURE_VERSION}.tgz -Ls https://dl.bintray.com/
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
+#Install chrome driver
+RUN export chromeDriverLatestVersion=`curl https://chromedriver.storage.googleapis.com/LATEST_RELEASE` && \
+    wget https://chromedriver.storage.googleapis.com/${chromeDriverLatestVersion}/chromedriver_linux64.zip
+RUN unzip chromedriver_linux64.zip
+ENV CHROMEDRIVER_PATH /tests/chromedriver
+
 USER root
 
 COPY . .
-#RUN gradle build
+#RUN gradle clean build
 #RUN gradle task runTests
 #CMD sleep 100

@@ -1,15 +1,8 @@
 version: "3"
 
 services:
-  test_local:
-    build: .
-    privileged: true
-    user: root
-    volumes:
-      - ./build:/tests/build
-
   jenkins:
-    image: jenkins/jenkins:lts
+    image: jenkins_testauto:latest
     container_name: jenkins
     hostname: jenkins
     privileged: true
@@ -17,3 +10,7 @@ services:
     ports:
       - 8080:8080
       - 50000:50000
+    volumes:
+      - ~/jenkins-data_new:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker:/usr/local/bin/docker

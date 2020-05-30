@@ -41,12 +41,13 @@ public class DriverFactory {
 
     private void setChromeDriverBasedOnOS()
     {
+        String chromeDriverEnvPath = System.getenv("CHROMEDRIVER_PATH");
         if (SystemUtils.IS_OS_WINDOWS) {
-            System.setProperty("webdriver.chrome.driver", "Driver/win/chromedriver.exe");
+            System.setProperty("webdriver.chrome.driver", chromeDriverEnvPath != null ? chromeDriverEnvPath : "Driver/win/chromedriver.exe");
         } else if (SystemUtils.IS_OS_LINUX) {
-            System.setProperty("webdriver.chrome.driver", "Driver/linux/chromedriver");
+            System.setProperty("webdriver.chrome.driver", chromeDriverEnvPath != null ? chromeDriverEnvPath : "Driver/linux/chromedriver");
         } else if (SystemUtils.IS_OS_MAC_OSX) {
-            System.setProperty("webdriver.chrome.driver", "Driver/mac/chromedriver");
+            System.setProperty("webdriver.chrome.driver", chromeDriverEnvPath != null ? chromeDriverEnvPath : "Driver/mac/chromedriver");
         }
     }
 
