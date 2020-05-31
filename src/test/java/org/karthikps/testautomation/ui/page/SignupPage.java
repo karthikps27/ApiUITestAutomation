@@ -1,16 +1,32 @@
 package org.karthikps.testautomation.ui.page;
 
+import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
-import com.paulhammant.ngwebdriver.ByAngularModel;
+import com.paulhammant.ngwebdriver.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.checkerframework.common.reflection.qual.ForName;
+import org.karthikps.testautomation.infra.Storage;
+import org.karthikps.testautomation.infra.pojo.UserData;
 import org.karthikps.testautomation.ui.core.BasePage;
+import org.openqa.selenium.By;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class SignupPage extends BasePage {
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+public class SignupPage<T> extends BasePage<T> {
 
     private static final Faker faker = new Faker();
+    private final Logger logger = LogManager.getLogger(SignupPage.class);
 
     @ByAngularModel.FindBy(model = "$ctrl.user.firstName")
     private WebElement firstNameField;
@@ -21,9 +37,69 @@ public class SignupPage extends BasePage {
     @ByAngularModel.FindBy(model = "$ctrl.user.email")
     private WebElement emailField;
 
+    @ByAngularButtonText.FindBy(buttonText = "Continue")
+    private WebElement continueButton;
+
+    @FindBy(className = "div.custom-radiobuttons.custom-radiobuttons-inline > ul > li")
+    private List<WebElement> salutations;
+
+    @FindBy(id = "day")
+    private WebElement dayDropDown;
+
+    @FindBy(id = "month")
+    private WebElement monthDropDown;
+
+    @FindBy(id = "year")
+    private WebElement yearDropDown;
+
+    @ByAngularModel.FindBy(model = "$ctrl.user.contactNumber")
+    private WebElement mobileNumberField;
+
+    @ByAngularModel.FindBy(model = "$ctrl.address.value")
+    private WebElement addressField;
+
+    @FindBy(css = ".uib-typeahead-match.ng-scope.active")
+    private WebElement addressConfirm;
+
+    @ByAngularModel.FindBy(model = "$ctrl.user.userName")
+    private WebElement usernameField;
+
+    @ByAngularModel.FindBy(model = "$ctrl.user.password")
+    private WebElement passwordField;
+
+    @ByAngularModel.FindBy(model = "$ctrl.user.confirmPassword")
+    private WebElement confirmPasswordField;
+
+    @FindBy(css = "div.form-group.custom-checkbox.extra-space > label")
+    private WebElement agreeTermsAndCondition;
+
+    @FindBy(css = ".form-inline:nth-child(5) > button")
+    private WebElement joinPointsBetButton;
+    //@ByAngularButtonText.FindBy(buttonText = "Join PointsBet")
+
+    @FindBy(css = "[ng-show=\"$ctrl.inProgress === true\"]")
+    private WebElement signupProgress;
+
     public SignupPage(WebDriver webDriver) {
         super(webDriver);
         PageFactory.initElements(webDriver, this);
+        createFakeUserDataDictionary();
+    }
+
+    public void createFakeUserDataDictionary() {
+        String mobileNumber = "0400000000";
+        String address = "535 Church St, Richmond VIC 3121";
+        UserData userData = new UserData(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                faker.internet().safeEmailAddress(),
+                faker.date().birthday(18, 80),
+                mobileNumber,
+                address,
+                faker.name().username().replace(".", ""),
+                faker.internet().password()
+                );
+        Storage.userDataMap.add(userData);
     }
 
     /**
@@ -31,10 +107,59 @@ public class SignupPage extends BasePage {
      */
     public void fillFirstPage()
     {
-        enterStringToField(firstNameField, faker.name().firstName());
-        enterStringToField(lastNameField, faker.name().lastName());
-        enterStringToField(emailField, faker.internet().safeEmailAddress());
+        enterStringToField(firstNameField, Storage.userDataMap.get(0).getFirstname());
+        enterStringToField(lastNameField, Storage.userDataMap.get(0).getLastname());
+        enterStringToField(emailField, Storage.userDataMap.get(0).getEmail());
+        click(continueButton);
     }
 
+    /**
+     * Fill the second page for signing up
+     */
+    public void fillSecondPageForSignup() {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            UserData userData = Storage.userDataMap.get(0);
+            Date dateOfBirth = userData.getDateOfBirth();
+            LocalDate date = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            selectFromListUsingRepeater(ByAngular.repeater("salutation in $ctrl.salutations track by $index"), SelectBy.INDEX, (T)(Integer) 1);
+
+            click(dayDropDown);
+            selectFromListUsingRepeater(ByAngular.repeater("n in [] | range:1:31"), SelectBy.INDEX,
+                    (T)(Integer) (date.getDayOfMonth() - 1));
+
+            click(monthDropDown);
+            selectFromListUsingRepeater(ByAngular.repeater("n in [] | range:1:12"), SelectBy.INDEX,
+                    (T)(Integer) (date.getMonthValue() - 1));
+
+            click(yearDropDown);
+            selectFromListUsingRepeater(ByAngular.repeater("year in $ctrl.years track by $index"), SelectBy.VALUE,
+                    (T) Integer.toString(date.getYear()));
+
+
+            enterStringToField(mobileNumberField, userData.getMobileNumber());
+
+            enterStringToField(addressField, userData.getAddress());
+            waitForElement(addressConfirm);
+            selectFromListUsingRepeater(ByAngular.repeater("match in matches track by $index"), SelectBy.INDEX, (T)(Integer) 0);
+
+            enterStringToField(usernameField, userData.getUsername());
+            enterStringToField(passwordField, userData.getPassword());
+            enterStringToField(confirmPasswordField, userData.getPassword());
+
+            click(agreeTermsAndCondition);
+
+            click(joinPointsBetButton);
+            waitForElementToDisappear(signupProgress);
+
+            logger.info("User sign up successful. Username: " + userData.getUsername() + ", Password:" + userData.getPassword());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            logger.error(e.getStackTrace());
+        }
+    }
 
 }

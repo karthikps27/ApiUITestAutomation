@@ -29,5 +29,6 @@ public class UITest extends DriverFactory
         HomePage homePage = new HomePage(webDriver);
         SignupPage signupPage = homePage.goToSignupPage();
         signupPage.fillFirstPage();
+        signupPage.fillSecondPageForSignup();
     }
 }
