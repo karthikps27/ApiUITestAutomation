@@ -1,29 +1,27 @@
 package org.karthikps.testautomation.ui.page;
 
-import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
 import com.paulhammant.ngwebdriver.*;
+import io.qameta.allure.Allure;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.checkerframework.common.reflection.qual.ForName;
 import org.karthikps.testautomation.infra.Storage;
 import org.karthikps.testautomation.infra.pojo.UserData;
-import org.karthikps.testautomation.ui.core.BasePage;
-import org.openqa.selenium.By;
-import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-public class SignupPage<T> extends BasePage<T> {
+public class SignupPage<T> extends HomePage<T> {
 
     private static final Faker faker = new Faker();
     private final Logger logger = LogManager.getLogger(SignupPage.class);
@@ -111,12 +109,13 @@ public class SignupPage<T> extends BasePage<T> {
         enterStringToField(lastNameField, Storage.userDataMap.get(0).getLastname());
         enterStringToField(emailField, Storage.userDataMap.get(0).getEmail());
         click(continueButton);
+        logger.info("Filled first page for new user sign up");
     }
 
     /**
      * Fill the second page for signing up
      */
-    public void fillSecondPageForSignup() {
+    public void fillSecondPageAndSignup() throws Exception {
         try {
             Calendar calendar = Calendar.getInstance();
             UserData userData = Storage.userDataMap.get(0);
@@ -154,12 +153,17 @@ public class SignupPage<T> extends BasePage<T> {
             waitForElementToDisappear(signupProgress);
 
             logger.info("User sign up successful. Username: " + userData.getUsername() + ", Password:" + userData.getPassword());
+            Allure.addAttachment("signUpTest", new ByteArrayInputStream(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES)));
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             logger.error(e.getStackTrace());
+            throw new Exception(e);
         }
     }
 
+    public LoggedInHomePage loginWithSignedUpUser() {
+        UserData userData = Storage.userDataMap.get(0);
+        return login(userData.getUsername(), userData.getPassword());
+    }
 }

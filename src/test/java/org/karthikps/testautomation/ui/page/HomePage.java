@@ -6,13 +6,22 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class HomePage extends BasePage {
+public class HomePage<T> extends BasePage<T> {
 
     @FindBy(css = "div.user-area.logged-out > a")
     protected WebElement signUpButton;
 
     @FindBy(css = "div.user-area.logged-out > button")
     protected WebElement loginButton;
+
+    @FindBy(id = "login-username")
+    protected WebElement loginUsernameField;
+
+    @FindBy(id = "Password")
+    protected WebElement loginPasswordField;
+
+    @FindBy(id = "login-button")
+    protected WebElement loginSubmitButton;
 
     public HomePage(WebDriver webDriver) {
         super(webDriver);
@@ -26,5 +35,13 @@ public class HomePage extends BasePage {
     public SignupPage goToSignupPage() {
         click(signUpButton);
         return new SignupPage(webDriver);
+    }
+
+    public LoggedInHomePage login(String username, String password) {
+        click(loginButton);
+        enterStringToField(loginUsernameField, username);
+        enterStringToField(loginPasswordField, password);
+        click(loginSubmitButton);
+        return new LoggedInHomePage(webDriver);
     }
 }

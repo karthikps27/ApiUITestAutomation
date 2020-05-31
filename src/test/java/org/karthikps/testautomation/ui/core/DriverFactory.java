@@ -6,16 +6,14 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 
 public class DriverFactory {
     private static Logger logger = LogManager.getLogger(DriverFactory.class.getName());
     protected WebDriver webDriver;
 
     @Parameters({"browser","headless"})
-    @BeforeClass
+    @BeforeTest
     public void setup(String browser, String headless) {
         logger.info("Setting up browser");
         switch (browser) {
@@ -51,7 +49,7 @@ public class DriverFactory {
         }
     }
 
-    @AfterClass
+    @AfterTest
     public void tearDown()
     {
         logger.info("Tearing down");

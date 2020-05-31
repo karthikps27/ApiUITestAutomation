@@ -69,7 +69,7 @@ public class BasePage<T>{
      * Open a browser instance with the provided URL
      * @param url
      */
-    protected void openBrowser(String url) {
+    public void openBrowser(String url) {
         webDriver.navigate().to(url);
         webDriver.manage().window().maximize();
         webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
@@ -144,7 +144,7 @@ public class BasePage<T>{
      * @param elements elements
      */
     protected void waitForElementToDisappear(WebElement elements) {
-        new WebDriverWait(webDriver, Duration.ofSeconds(30)).until(ExpectedConditions.invisibilityOf(elements));
+        new WebDriverWait(webDriver, Duration.ofSeconds(40)).until(ExpectedConditions.invisibilityOf(elements));
     }
 
     /**
