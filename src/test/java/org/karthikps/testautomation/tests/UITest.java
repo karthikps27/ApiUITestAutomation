@@ -11,7 +11,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Feature("Sample UI Tests")
+@Feature("Signup and deposit UI Tests")
 public class UITest extends DriverFactory
 {
     private static Logger logger = LogManager.getLogger(UITest.class);

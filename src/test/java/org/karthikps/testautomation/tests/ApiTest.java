@@ -7,24 +7,19 @@ import io.restassured.response.Response;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.karthikps.testautomation.api.ApiUtils;
+import org.karthikps.testautomation.api.UserAccountApiUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Feature("Beers API Tests")
-public class ApiTest<T> extends ApiUtils<T> {
+public class ApiTest {
     private static final Logger logger = LogManager.getLogger(ApiTest.class);
 
-    @Test(groups = {"Tests"}, description = "Beer API Tests")
-    @Description("Basic Beer API Tests")
-    public void AllBeers() {
-        RestAssured.baseURI = "https://api.punkapi.com";
-
-        Response response = httpGet("/v2/beers");
-        Assert.assertEquals(response.getStatusCode(), 200, "Correct status code returned");
-        logger.info("Response Body is =>  " + response.getBody());
-        T tagLine = evaluateResponseWithJsonPath(response, "$[0].tagline");
-        T description = evaluateResponseWithJsonPath(response, "$[0].description");
-        logger.info("Tag Line: " + tagLine);
-        logger.info("Description: " + description);
+    @Test(groups = {"Tests"}, description = "Signup and Login Tests")
+    @Description("Signup and Login Tests")
+    public void SignupAndLogin() {
+        Response response = accountApiUtils.UserSignupRequest();
+        logger.info("User signup status: " + response.getStatusCode());
+        logger.info("Signup response: " + response.getBody().asString());
     }
 }

@@ -162,7 +162,7 @@ public class SignupPage<T> extends HomePage<T> {
         }
     }
 
-    public LoggedInHomePage loginWithSignedUpUser() {
+    public LoggedInHomePage loginWithSignedUpUser() throws Exception {
         UserData userData = Storage.userDataMap.get(0);
         return login(userData.getUsername(), userData.getPassword());
     }
