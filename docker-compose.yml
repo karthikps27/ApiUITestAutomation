@@ -5,7 +5,8 @@ services:
     build: .
 
   jenkins:
-    image: karthikps/jenkins_testauto:1.0
+    #image: jenkins_testauto:latest
+    image: karthikps/jenkins_testauto:2.0
     #image: jenkins/jenkins:lts
     container_name: jenkins
     hostname: jenkins
