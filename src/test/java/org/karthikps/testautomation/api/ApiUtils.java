@@ -2,7 +2,6 @@ package org.karthikps.testautomation.api;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.json.JSONObject;
@@ -15,7 +14,7 @@ public class ApiUtils<T> {
      * @param jsonPathExpression
      * @return
      */
-    protected T evaluateResponseWithJsonPath(Response response, String jsonPathExpression)
+    public T evaluateResponseWithJsonPath(Response response, String jsonPathExpression)
     {
         return response.jsonPath().get(jsonPathExpression);
     }

@@ -14,7 +14,8 @@
     <test name="E2E Tests for Web and Api">
         <!-- <parameter name="browser" value="chrome"/> -->
         <classes>
-            <!-- <class name="org.karthikps.testautomation.tests.ApiTest"/> -->
+            <class name="org.karthikps.testautomation.tests.SetupTest"></class>
+            <class name="org.karthikps.testautomation.tests.ApiTest"/>
             <class name="org.karthikps.testautomation.tests.UITest"></class>
         </classes>
     </test>

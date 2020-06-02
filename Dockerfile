@@ -38,7 +38,7 @@ ENV CHROMEDRIVER_PATH /tests/chromedriver
 
 USER root
 
-COPY . .
+#COPY . .
 #RUN gradle clean build
 #RUN gradle task runTests
 #CMD sleep 100

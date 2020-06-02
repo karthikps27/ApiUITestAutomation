@@ -153,11 +153,11 @@ public class SignupPage<T> extends HomePage<T> {
             waitForElementToDisappear(signupProgress);
 
             logger.info("User sign up successful. Username: " + userData.getUsername() + ", Password:" + userData.getPassword());
-            Allure.addAttachment("signUpTest", new ByteArrayInputStream(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES)));
         }
         catch (Exception e)
         {
-            logger.error(e.getStackTrace());
+            logger.error("Failure during user signup: " + e.getMessage());
+            Allure.addAttachment("SignUpTestFailure", new ByteArrayInputStream(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES)));
             throw new Exception(e);
         }
     }

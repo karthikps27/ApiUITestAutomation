@@ -10,6 +10,7 @@ import io.restassured.specification.RequestSpecification;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.karthikps.testautomation.infra.TestProperties;
 import org.karthikps.testautomation.infra.pojo.UserSignupData;
 import org.karthikps.testautomation.tests.ApiTest;
 
@@ -61,7 +62,8 @@ public class UserAccountApiUtils<T> extends ApiUtils<T> {
         logger.info("User signup request body: " + jsonObject.toString());
 
         List<Header> requestHeaders = new ArrayList<Header>();
-        
+        requestHeaders.add(new Header("pb-perf-test", TestProperties.getPropertyValue("api.header.pbperftest")));
+        requestHeaders.add(new Header("Cookie", TestProperties.getPropertyValue("api.header.cookie")));
         Headers headers = new Headers(requestHeaders);
 
         return requestSpecification.with().headers(headers).request(Method.POST, "/api/account");

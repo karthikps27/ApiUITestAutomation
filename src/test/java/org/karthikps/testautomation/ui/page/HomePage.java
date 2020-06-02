@@ -1,12 +1,17 @@
 package org.karthikps.testautomation.ui.page;
 
+import io.qameta.allure.Allure;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.karthikps.testautomation.ui.core.BasePage;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import java.io.ByteArrayInputStream;
 
 public class HomePage<T> extends BasePage<T> {
     private final Logger logger = LogManager.getLogger(HomePage.class);
@@ -61,7 +66,8 @@ public class HomePage<T> extends BasePage<T> {
             return new LoggedInHomePage(webDriver);
         }
         catch (Exception e) {
-            logger.error("Failure during user login:" + e.getStackTrace());
+            logger.error("Failure during user login:" + e.getMessage());
+            Allure.addAttachment("LoginTestFailure", new ByteArrayInputStream(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES)));
             throw new Exception(e);
         }
     }
