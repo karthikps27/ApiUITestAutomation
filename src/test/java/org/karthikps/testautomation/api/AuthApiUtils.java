@@ -27,13 +27,7 @@ public class AuthApiUtils<T> extends ApiUtils<T>{
     public Response getAuthToken(String username, String password) {
         RequestSpecification requestSpecification = httpPostFormUrlEncoded();
 
-        List<Header> requestHeaders = new ArrayList<Header>();
-        requestHeaders.add(new Header("pb-perf-test", TestProperties.getPropertyValue("api.header.pbperftest")));
-        requestHeaders.add(new Header("Cookie", TestProperties.getPropertyValue("api.header.cookie")));
-        requestHeaders.add(new Header("origin", TestProperties.getPropertyValue("api.header.origin")));
-        requestHeaders.add(new Header("referer", TestProperties.getPropertyValue("referer")));
-        requestHeaders.add(new Header("accept", "application/json, text/plain, */*"));
-        Headers headers = new Headers(requestHeaders);
+        Headers headers = new Headers(getHeaders());
 
         Map<String, String> formParams = new HashMap<String, String>();
         formParams.put("username", username);

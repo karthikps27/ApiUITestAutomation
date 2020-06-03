@@ -1,6 +1,7 @@
 package org.karthikps.testautomation.api;
 
 import com.github.javafaker.Faker;
+import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
@@ -12,6 +13,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.karthikps.testautomation.infra.Storage;
 import org.karthikps.testautomation.infra.TestProperties;
+import org.karthikps.testautomation.infra.pojo.BPointTransaction;
+import org.karthikps.testautomation.infra.pojo.BeginTransaction;
 import org.karthikps.testautomation.infra.pojo.UserSignupDataAPI;
 
 import java.text.DateFormat;
@@ -28,12 +31,18 @@ public class UserAccountApiUtils<T> extends ApiUtils<T> {
     public static final String addressState = "Victoria";
     public static final String addressPostCode = "3121";
     public static final String addressCountry = "Australia";
+    private String baseURI;
 
     public UserAccountApiUtils(String baseUri) {
         super();
+        this.baseURI = baseURI;
         RestAssured.baseURI = baseUri;
     }
 
+    /**
+     * User signup request
+     * @return
+     */
     public Response UserSignupRequest() {
         String password = faker.internet().password();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -71,25 +80,18 @@ public class UserAccountApiUtils<T> extends ApiUtils<T> {
         return requestSpecification.with().headers(headers).request(Method.POST, "/asl/api/account");
     }
 
+    /**
+     * Check account balance of the given user
+     * @param bearerToken
+     * @return
+     */
     public Response checkBalanceInAccount(String bearerToken) {
         RequestSpecification requestSpecification = httpGet("/asl/api/account/balance");
 
-        List<Header> requestHeaders = new ArrayList<Header>();
-        requestHeaders.add(new Header("pb-perf-test", TestProperties.getPropertyValue("api.header.pbperftest")));
-        requestHeaders.add(new Header("Cookie", TestProperties.getPropertyValue("api.header.cookie")));
-        requestHeaders.add(new Header("authorization", "Bearer " + bearerToken));
-        Headers headers = new Headers(requestHeaders);
+        List<Header> headerList = getHeaders();
+        headerList.add(new Header("content-type", "application/json;charset=UTF-8"));
+        Headers headers = new Headers(headerList);
 
         return requestSpecification.with().headers(headers).request(Method.POST, "/asl/api/account");
-    }
-
-    public void DepositFundsToUserAccount(String bearerToken, String amount) {
-        List<Header> requestHeaders = new ArrayList<Header>();
-        requestHeaders.add(new Header("pb-perf-test", TestProperties.getPropertyValue("api.header.pbperftest")));
-        requestHeaders.add(new Header("Cookie", TestProperties.getPropertyValue("api.header.cookie")));
-        requestHeaders.add(new Header("authorization", "Bearer " + bearerToken));
-        Headers headers = new Headers(requestHeaders);
-
-        //httpPost()
     }
 }
