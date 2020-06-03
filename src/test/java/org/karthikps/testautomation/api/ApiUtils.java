@@ -44,4 +44,14 @@ public class ApiUtils<T> {
             .with()
                 .body(payload.toString());
     }
+
+    /**
+     * form-urlencoded type HTTP post request
+     * @return
+     */
+    protected RequestSpecification httpPostFormUrlEncoded() {
+        return RestAssured
+                .given()
+                    .contentType(ContentType.URLENC);
+    }
 }

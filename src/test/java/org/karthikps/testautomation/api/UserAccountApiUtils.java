@@ -10,9 +10,9 @@ import io.restassured.specification.RequestSpecification;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.karthikps.testautomation.infra.Storage;
 import org.karthikps.testautomation.infra.TestProperties;
-import org.karthikps.testautomation.infra.pojo.UserSignupData;
-import org.karthikps.testautomation.tests.ApiTest;
+import org.karthikps.testautomation.infra.pojo.UserSignupDataAPI;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,7 +38,7 @@ public class UserAccountApiUtils<T> extends ApiUtils<T> {
         String password = faker.internet().password();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
-        UserSignupData signupData = new UserSignupData();
+        UserSignupDataAPI signupData = new UserSignupDataAPI();
         signupData.setTitle("Mr");
         signupData.setFirstName(faker.name().firstName());
         signupData.setLastName(faker.name().lastName());
@@ -57,6 +57,8 @@ public class UserAccountApiUtils<T> extends ApiUtils<T> {
         signupData.setTermsAccepted(true);
         signupData.setPromotionCode("WELCOME");
 
+        Storage.userSignupDataAPI.add(signupData);
+
         JSONObject jsonObject = new JSONObject(signupData);
         RequestSpecification requestSpecification = httpPost(jsonObject);
         logger.info("User signup request body: " + jsonObject.toString());
@@ -66,6 +68,28 @@ public class UserAccountApiUtils<T> extends ApiUtils<T> {
         requestHeaders.add(new Header("Cookie", TestProperties.getPropertyValue("api.header.cookie")));
         Headers headers = new Headers(requestHeaders);
 
-        return requestSpecification.with().headers(headers).request(Method.POST, "/api/account");
+        return requestSpecification.with().headers(headers).request(Method.POST, "/asl/api/account");
+    }
+
+    public Response checkBalanceInAccount(String bearerToken) {
+        RequestSpecification requestSpecification = httpGet("/asl/api/account/balance");
+
+        List<Header> requestHeaders = new ArrayList<Header>();
+        requestHeaders.add(new Header("pb-perf-test", TestProperties.getPropertyValue("api.header.pbperftest")));
+        requestHeaders.add(new Header("Cookie", TestProperties.getPropertyValue("api.header.cookie")));
+        requestHeaders.add(new Header("authorization", "Bearer " + bearerToken));
+        Headers headers = new Headers(requestHeaders);
+
+        return requestSpecification.with().headers(headers).request(Method.POST, "/asl/api/account");
+    }
+
+    public void DepositFundsToUserAccount(String bearerToken, String amount) {
+        List<Header> requestHeaders = new ArrayList<Header>();
+        requestHeaders.add(new Header("pb-perf-test", TestProperties.getPropertyValue("api.header.pbperftest")));
+        requestHeaders.add(new Header("Cookie", TestProperties.getPropertyValue("api.header.cookie")));
+        requestHeaders.add(new Header("authorization", "Bearer " + bearerToken));
+        Headers headers = new Headers(requestHeaders);
+
+        //httpPost()
     }
 }

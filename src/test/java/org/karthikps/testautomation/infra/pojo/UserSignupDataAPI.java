@@ -1,6 +1,6 @@
 package org.karthikps.testautomation.infra.pojo;
 
-public class UserSignupData {
+public class UserSignupDataAPI {
 
     private String title;
     private String firstName;
