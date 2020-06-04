@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
 public class ApiTest {
     private static final Logger logger = LogManager.getLogger(ApiTest.class);
 
-    /* @Test(groups = {"Tests"}, description = "Signup and Login Tests")
+    @Test(groups = {"Tests"}, description = "Signup and Login Tests")
     @Description("Signup Tests")
     public void SignupAndLogin() {
         try {
@@ -32,15 +32,14 @@ public class ApiTest {
         catch (Exception e) {
             Assert.fail(e.getMessage());
         }
-    }*/
+    }
 
-    /* @Test(groups = {"Tests"}, description = "Login Tests")
+    @Test(groups = {"Tests"}, description = "Login Tests", dependsOnMethods = {"SignupAndLogin"})
     @Description("Login Tests")
     public void Login() {
         try {
             AuthApiUtils authApiUtils = new AuthApiUtils(TestProperties.getPropertyValue("api.authURL"));
-            //Response response = authApiUtils.getAuthTokenForCreatedUser();
-            Response response = authApiUtils.getAuthToken("manualstehr", "unvbzw5gk2yi");
+            Response response = authApiUtils.getAuthTokenForCreatedUser();
             logger.info("Login response: " + response.getBody().asString());
             logger.info("Auth token:" + response.jsonPath().get("access_token"));
             Storage.randomStorageMap.put("AuthToken", response.jsonPath().get("access_token"));
@@ -48,26 +47,30 @@ public class ApiTest {
         catch (Exception e) {
             Assert.fail(e.getMessage());
         }
-    } */
+    }
 
-    @Test(groups = {"Tests"}, description = "Deposit Tests")
+    @Test(groups = {"Tests"}, description = "Deposit Tests", dependsOnMethods = {"Login"})
     @Description("Deposit Fund Tests")
     public void Deposit() {
+        float amountToDeposit = (float) 10.0;
         try {
-            AuthApiUtils authApiUtils = new AuthApiUtils(TestProperties.getPropertyValue("api.authURL"));
-            //Response response = authApiUtils.getAuthTokenForCreatedUser();
-            Response response = authApiUtils.getAuthToken("manualstehr", "unvbzw5gk2yi");
-            logger.info("Login response: " + response.getBody().asString());
-            logger.info("Auth token:" + response.jsonPath().get("access_token"));
-            Storage.randomStorageMap.put("AuthToken", response.jsonPath().get("access_token"));
+            UserAccountApiUtils userAccountApiUtils = new UserAccountApiUtils(TestProperties.getPropertyValue("api.baseURL"));
+            Response balanceInAccount = userAccountApiUtils.checkBalanceInAccount(Storage.randomStorageMap.get("AuthToken").toString());
+            float balanceBeforeDeposit = Float.parseFloat(balanceInAccount.jsonPath().get("balances.balance").toString());
+            logger.info("Account balance before deposit: " + balanceBeforeDeposit);
 
             DepositApiUtils depositApiUtils = new DepositApiUtils(TestProperties.getPropertyValue("api.baseURL"));
             Response depositResponse = depositApiUtils.depositAmountSuccessfully(Storage.randomStorageMap.get("AuthToken").toString(),
-                    //"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6Im1hbnVhbHN0ZWhyIiwicHJpbWFyeXNpZCI6IjcwMjM0NCIsIlRva2VuSWQiOiI4OTdmN2Q1Zi1iNjc2LTQwMjctYTYwOS1mZTM3Nzk1OThmNDkiLCJpc3MiOiJodHRwczovL2F1dGgtdXQucG9pbnRzYmV0LmNvbSIsImF1ZCI6IjU3OGZlYThmOTk1MDQ4OGU5YTJhNTg1ZTgzNGJmMDNhIiwiZXhwIjoxNTkxNzkzNTAyLCJuYmYiOjE1OTExODg3MDJ9.KfrnNUV3hsjewxzarDpiVvDk3yiqZOCf50maFLH3Cms",
-                    //Storage.userSignupDataAPI.get(0).getFirstName(),
-                    "manualstehr",
-                    10.00);
+                    Storage.userSignupDataAPI.get(0).getFirstName(),
+                    amountToDeposit);
+
             logger.info("Transaction response: " + depositResponse.getBody().asString());
+            Assert.assertTrue(depositResponse.jsonPath().get("Success"));
+
+            Response balanceInAccountAfter = userAccountApiUtils.checkBalanceInAccount(Storage.randomStorageMap.get("AuthToken").toString());
+            float balanceAfterDeposit = Float.parseFloat(balanceInAccountAfter.jsonPath().get("balances.balance").toString());
+            logger.info("Account balance after deposit: " + balanceAfterDeposit);
+            Assert.assertEquals(balanceAfterDeposit, balanceBeforeDeposit + amountToDeposit);
         }
         catch (Exception e) {
             Assert.fail(e.getMessage());

@@ -2,7 +2,6 @@ package org.karthikps.testautomation.infra;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.karthikps.testautomation.tests.ApiTest;
 
 import java.io.FileReader;
 import java.io.IOException;

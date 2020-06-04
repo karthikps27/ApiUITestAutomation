@@ -64,7 +64,7 @@ public class DepositApiUtils<T> extends ApiUtils<T>{
      * @param amount
      * @return
      */
-    public Response depositAmountSuccessfully(String bearerToken, String cardHolderName, Double amount) {
+    public Response depositAmountSuccessfully(String bearerToken, String cardHolderName, double amount) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 60);
         LocalDate localDate = cal.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -72,7 +72,7 @@ public class DepositApiUtils<T> extends ApiUtils<T>{
 
         return DepositFundsToUserAccount(bearerToken,
                 TestProperties.getPropertyValue("api.request.cardnumber"),
-                Integer.toString((int) (amount * 100)),
+                Integer.toString((int)(amount * 100)),
                 monthValue < 10 ? '0' + Integer.toString(monthValue) : Integer.toString(monthValue),
                 Integer.toString(localDate.getYear()),
                 cardHolderName,

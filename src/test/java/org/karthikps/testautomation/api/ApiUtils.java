@@ -29,7 +29,7 @@ public class ApiUtils<T> {
      * @return RestAssured request object
      * @param path
      */
-    protected RequestSpecification httpGet(String path) {
+    protected RequestSpecification httpGet() {
         return RestAssured
             .given()
             .with()

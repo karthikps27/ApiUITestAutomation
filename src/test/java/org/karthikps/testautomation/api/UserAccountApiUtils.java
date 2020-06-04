@@ -1,7 +1,6 @@
 package org.karthikps.testautomation.api;
 
 import com.github.javafaker.Faker;
-import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
@@ -13,8 +12,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.karthikps.testautomation.infra.Storage;
 import org.karthikps.testautomation.infra.TestProperties;
-import org.karthikps.testautomation.infra.pojo.BPointTransaction;
-import org.karthikps.testautomation.infra.pojo.BeginTransaction;
 import org.karthikps.testautomation.infra.pojo.UserSignupDataAPI;
 
 import java.text.DateFormat;
@@ -86,12 +83,14 @@ public class UserAccountApiUtils<T> extends ApiUtils<T> {
      * @return
      */
     public Response checkBalanceInAccount(String bearerToken) {
-        RequestSpecification requestSpecification = httpGet("/asl/api/account/balance");
+        RestAssured.baseURI = TestProperties.getPropertyValue("api.accountBaseURL");
+        RequestSpecification requestSpecification = httpGet();
 
         List<Header> headerList = getHeaders();
+        headerList.add(new Header("authorization", "Bearer " + bearerToken));
         headerList.add(new Header("content-type", "application/json;charset=UTF-8"));
         Headers headers = new Headers(headerList);
 
-        return requestSpecification.with().headers(headers).request(Method.POST, "/asl/api/account");
+        return requestSpecification.with().headers(headers).request(Method.GET, "/api/v2/accounts/user/summary");
     }
 }
